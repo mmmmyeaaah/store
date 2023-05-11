@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.github',
 
     'debug_toolbar',
+    'django_extensions',
 
     'orders',
     'products',
@@ -97,10 +98,17 @@ INTERNAL_IPS = [
     'localhost',
 ]
 
+# Redis
+
+REDIS_HOST = os.getenv('REDIS_HOST')
+REDIS_PORT = os.getenv('REDIS_PORT')
+
+# Caches
+
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'LOCATION': f'redis://{REDIS_HOST}:{REDIS_PORT}/1',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
         }
@@ -179,12 +187,14 @@ LOGOUT_REDIRECT_URL = '/'
 
 # Sending emails
 
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = os.getenv('EMAIL_HOST')
-EMAIL_PORT = os.getenv('EMAIL_PORT')
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
-EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL')
+if DEBUG:
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+else:
+    EMAIL_HOST = os.getenv('EMAIL_HOST')
+    EMAIL_PORT = os.getenv('EMAIL_PORT')
+    EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+    EMAIL_USE_SSL = os.getenv('EMAIL_USE_SSL')
 
 # OAuth
 
@@ -205,8 +215,8 @@ SOCIALACCOUNT_PROVIDERS = {
 
 # Celery
 
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_BROKER_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}'
+CELERY_RESULT_BACKEND = f'redis://{REDIS_HOST}:{REDIS_PORT}'
 
 # Stripe
 

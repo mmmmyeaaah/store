@@ -54,10 +54,12 @@ INSTALLED_APPS = [
 
     'debug_toolbar',
     'django_extensions',
+    'rest_framework',
 
     'orders',
     'products',
     'users',
+    'api',
 ]
 
 MIDDLEWARE = [
